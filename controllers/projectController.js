@@ -13,7 +13,7 @@ exports.createProject = async (req, res, next) => {
       description,
       client,
       createdBy: req.user._id,
-      company: req.user.company || null
+      company: req.user._id  // referenciamos al usuario como empresa
     };
     const project = await Project.create(projectData);
     res.status(201).json(project);
