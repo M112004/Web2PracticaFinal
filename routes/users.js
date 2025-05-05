@@ -3,7 +3,6 @@ const router = express.Router();
 const auth = require('../middlewares/auth');
 const userCtrl = require('../controllers/userController');
 
-// OnBoarding
 router.post('/register', userCtrl.register);
 router.put('/validation', auth, userCtrl.validateEmail);
 router.post('/login', userCtrl.login);
