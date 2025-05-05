@@ -5,22 +5,25 @@ const UserSchema = new mongoose.Schema({
   password:       { type: String, required: true },
   validated:      { type: Boolean, default: false },
   validationCode: { type: String },
+  resetPasswordToken: { type: String },
+  resetPasswordExpires: { type: Date },
+  inviteCode: { type: String },
+  invitedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
   personal: {
     nombre:    String,
     apellidos: String,
     telefono:  String,
-    // …otros campos que necesites
   },
 
   company: {
     nombre:    String,
     direccion: String,
-    // …otros campos que necesites
   },
 
   isDeleted: { type: Boolean, default: false },
-  deletedAt: Date,
+  deletedAt: { type: Date },
+  role: { type: String, enum: ['admin', 'user'], default: 'user' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', UserSchema);
