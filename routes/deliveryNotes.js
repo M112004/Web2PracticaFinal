@@ -4,6 +4,7 @@ const auth = require('../middlewares/auth');
 const multer = require('multer');
 const deliveryCtrl = require('../controllers/deliveryNoteController');
 
+// Configuración de multer para manejar archivos
 const upload = multer();
 
 router.use(auth);

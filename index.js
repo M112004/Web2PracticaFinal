@@ -18,7 +18,7 @@ app.use('/api/deliverynote', deliveryNoteRoutes);
 
 // Error handler
 app.use((err, req, res, next) => {
-  console.error(err);
+  console.error('Error general:', err);
   res.status(500).json({ error: 'Algo falló en el servidor.' });
 });
 
