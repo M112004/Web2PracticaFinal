@@ -119,31 +119,40 @@ exports.changePassword = async (req, res, next) => {
 
 // Solicitar recuperación de contraseña
 exports.requestPasswordReset = async (req, res, next) => {
-  try {
-    const { email } = req.body;
-    const user = await User.findOne({ email });
-    
-    if (!user) {
-      // Por seguridad, no revelamos si el email existe o no
-      return res.json({ success: true, message: 'Si el email existe, recibirás un correo con instrucciones' });
+    try {
+      const { email } = req.body;
+      const user = await User.findOne({ email });
+      
+      if (!user) {
+        // Por seguridad, no revelamos si el email existe o no
+        return res.json({ success: true, message: 'Si el email existe, recibirás un correo con instrucciones' });
+      }
+      
+      // Generar token para resetear contraseña
+      const resetToken = crypto.randomBytes(20).toString('hex');
+      const resetExpires = Date.now() + 3600000; // 1 hora
+      
+      user.resetPasswordToken = resetToken;
+      user.resetPasswordExpires = resetExpires;
+      await user.save();
+      
+      // Enviar email con el token
+      await sendPasswordReset(email, resetToken);
+      
+      // Para desarrollo: devolver también el token en la respuesta
+      res.json({ 
+        success: true, 
+        message: 'Se ha enviado un correo con instrucciones',
+        // Solo devolver esto en desarrollo, eliminar en producción:
+        devInfo: { 
+          resetToken,
+          resetUrl: `${process.env.FRONTEND_URL}/reset-password/${resetToken}`
+        }
+      });
+    } catch (err) {
+      next(err);
     }
-    
-    // Generar token para resetear contraseña
-    const resetToken = crypto.randomBytes(20).toString('hex');
-    const resetExpires = Date.now() + 3600000; // 1 hora
-    
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = resetExpires;
-    await user.save();
-    
-    // Enviar email con el token
-    await sendPasswordReset(email, resetToken);
-    
-    res.json({ success: true, message: 'Se ha enviado un correo con instrucciones' });
-  } catch (err) {
-    next(err);
-  }
-};
+  };
 
 // Resetear contraseña con token
 exports.resetPassword = async (req, res, next) => {
