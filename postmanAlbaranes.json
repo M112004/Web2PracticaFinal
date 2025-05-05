@@ -7,7 +7,8 @@
     "variable": [
       { "key": "baseUrl", "value": "http://localhost:4000/api" },
       { "key": "token", "value": "" },
-      { "key": "clientId", "value": "" }
+      { "key": "clientId", "value": "" },
+      { "key": "projectId", "value": "" }
     ],
     "item": [
       {
@@ -21,25 +22,16 @@
             "mode": "raw",
             "raw": "{\n  \"email\": \"miquel.angel.prieto@gmail.com\",\n  \"password\": \"MiPassword123\"\n}"
           },
-          "url": {
-            "raw": "{{baseUrl}}/users/register",
-            "host": ["{{baseUrl}}"],
-            "path": ["users","register"]
-          }
+          "url": { "raw": "{{baseUrl}}/users/register", "host": ["{{baseUrl}}"], "path": ["users","register"] }
         },
-        "event": [
-          {
-            "listen": "test",
-            "script": {
-              "exec": [
-                "if (pm.response.code === 201) {",
-                "  var json = pm.response.json();",
-                "  pm.collectionVariables.set('token', json.token);",
-                "}"
-              ]
-            }
-          }
-        ]
+        "event": [{
+          "listen": "test",
+          "script": { "exec": [
+            "if (pm.response.code === 201) {",
+            "  pm.collectionVariables.set('token', pm.response.json().token);",
+            "}"
+          ] }
+        }]
       },
       {
         "name": "2. Validate Email",
@@ -49,47 +41,26 @@
             { "key": "Content-Type", "value": "application/json" },
             { "key": "Authorization", "value": "Bearer {{token}}" }
           ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"code\": \"REPLACE_WITH_CODE\"\n}"
-          },
-          "url": {
-            "raw": "{{baseUrl}}/users/validation",
-            "host": ["{{baseUrl}}"],
-            "path": ["users","validation"]
-          }
+          "body": { "mode": "raw", "raw": "{\n  \"code\": \"REPLACE_WITH_CODE\"\n}" },
+          "url": { "raw": "{{baseUrl}}/users/validation", "host": ["{{baseUrl}}"], "path": ["users","validation"] }
         }
       },
       {
         "name": "3. Login User",
         "request": {
           "method": "POST",
-          "header": [
-            { "key": "Content-Type", "value": "application/json" }
-          ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"email\": \"miquel.angel.prieto@gmail.com\",\n  \"password\": \"MiPassword123\"\n}"
-          },
-          "url": {
-            "raw": "{{baseUrl}}/users/login",
-            "host": ["{{baseUrl}}"],
-            "path": ["users","login"]
-          }
+          "header": [ { "key": "Content-Type", "value": "application/json" } ],
+          "body": { "mode": "raw", "raw": "{\n  \"email\": \"miquel.angel.prieto@gmail.com\",\n  \"password\": \"MiPassword123\"\n}" },
+          "url": { "raw": "{{baseUrl}}/users/login", "host": ["{{baseUrl}}"], "path": ["users","login"] }
         },
-        "event": [
-          {
-            "listen": "test",
-            "script": {
-              "exec": [
-                "if (pm.response.code === 200) {",
-                "  var json = pm.response.json();",
-                "  pm.collectionVariables.set('token', json.token);",
-                "}"
-              ]
-            }
-          }
-        ]
+        "event": [{
+          "listen": "test",
+          "script": { "exec": [
+            "if (pm.response.code === 200) {",
+            "  pm.collectionVariables.set('token', pm.response.json().token);",
+            "}"
+          ] }
+        }]
       },
       {
         "name": "4. Update Personal Data",
@@ -99,15 +70,8 @@
             { "key": "Content-Type", "value": "application/json" },
             { "key": "Authorization", "value": "Bearer {{token}}" }
           ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"nombre\": \"Juan\",\n  \"apellidos\": \"Pérez\",\n  \"telefono\": \"600123456\"\n}"
-          },
-          "url": {
-            "raw": "{{baseUrl}}/users",
-            "host": ["{{baseUrl}}"],
-            "path": ["users"]
-          }
+          "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Juan\",\n  \"apellidos\": \"Pérez\",\n  \"telefono\": \"600123456\"\n}" },
+          "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] }
         }
       },
       {
@@ -118,15 +82,8 @@
             { "key": "Content-Type", "value": "application/json" },
             { "key": "Authorization", "value": "Bearer {{token}}" }
           ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"nombre\": \"Acme S.L.\",\n  \"direccion\": \"Calle Falsa 123\"\n}"
-          },
-          "url": {
-            "raw": "{{baseUrl}}/users/company",
-            "host": ["{{baseUrl}}"],
-            "path": ["users","company"]
-          }
+          "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Acme S.L.\",\n  \"direccion\": \"Calle Falsa 123\"\n}" },
+          "url": { "raw": "{{baseUrl}}/users/company", "host": ["{{baseUrl}}"], "path": ["users","company"] }
         }
       },
       {
@@ -137,56 +94,30 @@
             { "key": "Content-Type", "value": "application/json" },
             { "key": "Authorization", "value": "Bearer {{token}}" }
           ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"name\": \"Cliente1\",\n  \"email\": \"c1@example.com\",\n  \"phone\": \"600000001\",\n  \"address\": \"Dirección 1\"\n}"
-          },
-          "url": {
-            "raw": "{{baseUrl}}/clients",
-            "host": ["{{baseUrl}}"],
-            "path": ["clients"]
-          }
+          "body": { "mode": "raw", "raw": "{\n  \"name\": \"Cliente1\",\n  \"email\": \"c1@example.com\",\n  \"phone\": \"600000001\",\n  \"address\": \"Dirección 1\"\n}" },
+          "url": { "raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"] }
         },
-        "event": [
-          {
-            "listen": "test",
-            "script": {
-              "exec": [
-                "if (pm.response.code === 201) {",
-                "  var json = pm.response.json();",
-                "  pm.collectionVariables.set('clientId', json._id);",
-                "}"
-              ]
-            }
-          }
-        ]
+        "event": [{
+          "listen": "test",
+          "script": { "exec": [
+            "if (pm.response.code === 201) {",
+            "  pm.collectionVariables.set('clientId', pm.response.json()._id);",
+            "}"
+          ] }
+        }]
       },
       {
         "name": "7. Get All Clients",
-        "request": {
-          "method": "GET",
-          "header": [
-            { "key": "Authorization", "value": "Bearer {{token}}" }
-          ],
-          "url": {
-            "raw": "{{baseUrl}}/clients",
-            "host": ["{{baseUrl}}"],
-            "path": ["clients"]
-          }
+        "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "url": { "raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"] }
         }
       },
       {
         "name": "8. Get Client By ID",
         "request": {
           "method": "GET",
-          "header": [
-            { "key": "Authorization", "value": "Bearer {{token}}" }
-          ],
-          "url": {
-            "raw": "{{baseUrl}}/clients/{{clientId}}",
-            "host": ["{{baseUrl}}"],
-            "path": ["clients","{{clientId}}"]
-          }
+          "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "url": { "raw": "{{baseUrl}}/clients/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["clients","{{clientId}}"] }
         }
       },
       {
@@ -197,71 +128,89 @@
             { "key": "Content-Type", "value": "application/json" },
             { "key": "Authorization", "value": "Bearer {{token}}" }
           ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"phone\": \"699999999\"\n}"
-          },
-          "url": {
-            "raw": "{{baseUrl}}/clients/{{clientId}}",
-            "host": ["{{baseUrl}}"],
-            "path": ["clients","{{clientId}}"]
-          }
+          "body": { "mode": "raw", "raw": "{\n  \"phone\": \"699999999\"\n}" },
+          "url": { "raw": "{{baseUrl}}/clients/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["clients","{{clientId}}"] }
         }
       },
       {
         "name": "10. Archive Client",
-        "request": {
-          "method": "PATCH",
-          "header": [
-            { "key": "Authorization", "value": "Bearer {{token}}" }
-          ],
-          "url": {
-            "raw": "{{baseUrl}}/clients/{{clientId}}/archive",
-            "host": ["{{baseUrl}}"],
-            "path": ["clients","{{clientId}}","archive"]
-          }
+        "request": { "method": "PATCH", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "url": { "raw": "{{baseUrl}}/clients/{{clientId}}/archive", "host": ["{{baseUrl}}"], "path": ["clients","{{clientId}}","archive"] }
         }
       },
       {
         "name": "11. Delete Client",
-        "request": {
-          "method": "DELETE",
-          "header": [
-            { "key": "Authorization", "value": "Bearer {{token}}" }
-          ],
-          "url": {
-            "raw": "{{baseUrl}}/clients/{{clientId}}",
-            "host": ["{{baseUrl}}"],
-            "path": ["clients","{{clientId}}"]
-          }
+        "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "url": { "raw": "{{baseUrl}}/clients/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["clients","{{clientId}}"] }
         }
       },
       {
         "name": "12. Get Archived Clients",
-        "request": {
-          "method": "GET",
-          "header": [
-            { "key": "Authorization", "value": "Bearer {{token}}" }
-          ],
-          "url": {
-            "raw": "{{baseUrl}}/clients/archived/all",
-            "host": ["{{baseUrl}}"],
-            "path": ["clients","archived","all"]
-          }
+        "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "url": { "raw": "{{baseUrl}}/clients/archived/all", "host": ["{{baseUrl}}"], "path": ["clients","archived","all"] }
         }
       },
       {
         "name": "13. Restore Client",
+        "request": { "method": "PATCH", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "url": { "raw": "{{baseUrl}}/clients/{{clientId}}/restore", "host": ["{{baseUrl}}"], "path": ["clients","{{clientId}}","restore"] }
+        }
+      },
+      {
+        "name": "14. Create Project",
         "request": {
-          "method": "PATCH",
-          "header": [
-            { "key": "Authorization", "value": "Bearer {{token}}" }
-          ],
-          "url": {
-            "raw": "{{baseUrl}}/clients/{{clientId}}/restore",
-            "host": ["{{baseUrl}}"],
-            "path": ["clients","{{clientId}}","restore"]
-          }
+          "method": "POST",
+          "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "body": { "mode": "raw", "raw": "{\n  \"title\": \"Proyecto 1\",\n  \"description\": \"Descripción del proyecto\",\n  \"client\": \"{{clientId}}\"\n}" },
+          "url": { "raw": "{{baseUrl}}/projects", "host": ["{{baseUrl}}"], "path": ["projects"] }
+        },
+        "event": [{ "listen": "test", "script": { "exec": [
+          "if (pm.response.code === 201) { pm.collectionVariables.set('projectId', pm.response.json()._id); }"
+        ] }}]
+      },
+      {
+        "name": "15. Get All Projects",
+        "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "url": { "raw": "{{baseUrl}}/projects", "host": ["{{baseUrl}}"], "path": ["projects"] }
+        }
+      },
+      {
+        "name": "16. Get Project By ID",
+        "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "url": { "raw": "{{baseUrl}}/projects/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["projects","{{projectId}}"] }
+        }
+      },
+      {
+        "name": "17. Update Project",
+        "request": {
+          "method": "PUT",
+          "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "body": { "mode": "raw", "raw": "{\n  \"description\": \"Nueva descripción\"\n}" },
+          "url": { "raw": "{{baseUrl}}/projects/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["projects","{{projectId}}"] }
+        }
+      },
+      {
+        "name": "18. Archive Project",
+        "request": { "method": "PATCH", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "url": { "raw": "{{baseUrl}}/projects/{{projectId}}/archive", "host": ["{{baseUrl}}"], "path": ["projects","{{projectId}}","archive"] }
+        }
+      },
+      {
+        "name": "19. Delete Project",
+        "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "url": { "raw": "{{baseUrl}}/projects/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["projects","{{projectId}}"] }
+        }
+      },
+      {
+        "name": "20. Get Archived Projects",
+        "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "url": { "raw": "{{baseUrl}}/projects/archived/all", "host": ["{{baseUrl}}"], "path": ["projects","archived","all"] }
+        }
+      },
+      {
+        "name": "21. Restore Project",
+        "request": { "method": "PATCH", "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+          "url": { "raw": "{{baseUrl}}/projects/{{projectId}}/restore", "host": ["{{baseUrl}}"], "path": ["projects","{{projectId}}","restore"] }
         }
       }
     ]
