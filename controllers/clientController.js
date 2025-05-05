@@ -4,20 +4,23 @@ const Client = require('../models/Client');
 exports.createClient = async (req, res, next) => {
   try {
     const { name, email, phone, address } = req.body;
-    const exists = await Client.findOne({ name, createdBy: req.user._id });
-    if (exists) return res.status(400).json({ error: 'Cliente ya existe' });
+    // Evitar duplicados por usuario o compañía
+    const filter = { name, createdBy: req.user._id };
+    const exists = await Client.findOne(filter);
+    if (exists) return res.status(400).json({ error: 'Cliente ya existe para este usuario' });
 
-    const client = await Client.create({
+    const clientData = {
       name,
       email,
       phone,
       address,
       createdBy: req.user._id,
-      company: req.user.company
-    });
-
+      company: req.user.company ? req.user._id : null
+    };
+    const client = await Client.create(clientData);
     res.status(201).json(client);
   } catch (err) {
+    console.error('Error en createClient:', err);
     next(err);
   }
 };

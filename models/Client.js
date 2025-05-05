@@ -5,9 +5,9 @@ const ClientSchema = new mongoose.Schema({
   email:      { type: String },
   phone:      { type: String },
   address:    { type: String },
-  // Asociar con el usuario que crea o su compañía
+  // Asociar con el usuario que crea y opcionalmente con la compañía del usuario
   createdBy:  { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  company:    { type: mongoose.Schema.Types.ObjectId, ref: 'User.company' },
+  company:    { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   isArchived: { type: Boolean, default: false },
   archivedAt: { type: Date },
 }, { timestamps: true });
