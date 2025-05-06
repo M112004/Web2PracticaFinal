@@ -1,0 +1,16 @@
+# Puerto en el que correrá la aplicación
+PORT=4000
+
+# URI de conexión a MongoDB
+MONGO_URI=mongodb+srv://usuario:contraseña@cluster.mongodb.net/nombre_base_datos
+
+# Clave secreta para generar/verificar JWT
+JWT_SECRET=tu_clave_secreta_jwt
+
+# Credenciales del correo para envío de emails (por ejemplo, SMTP)
+EMAIL_USER=usuario@dominio.com
+EMAIL_PASS=contraseña_del_correo
+
+# Claves de autenticación para Pinata (servicio de IPFS)
+PINATA_KEY=tu_pinata_api_key
+PINATA_SECRET=tu_pinata_api_secret
