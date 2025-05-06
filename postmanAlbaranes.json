@@ -1,497 +1,879 @@
 {
-    "info": {
-      "name": "Albaranes API Collection",
-      "description": "Colección completa para probar la API de gestión de albaranes",
-      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-      "_postman_id": "12345678-abcd-efgh-ijkl-1234567890ab"
-    },
-    "variable": [
-      { "key": "baseUrl", "value": "http://localhost:4000/api" },
-      { "key": "token", "value": "" },
-      { "key": "clientId", "value": "" },
-      { "key": "projectId", "value": "" },
-      { "key": "deliveryNoteId", "value": "" }
-    ],
-    "item": [
-      {
-        "name": "1. Gestión de Usuarios",
-        "item": [
-          {
-            "name": "1.1 Registro de Usuario",
-            "request": {
-              "method": "POST",
-              "header": [
-                { "key": "Content-Type", "value": "application/json" }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"email\": \"usuario@example.com\",\n  \"password\": \"Password123\"\n}"
-              },
-              "url": { "raw": "{{baseUrl}}/users/register", "host": ["{{baseUrl}}"], "path": ["users", "register"] }
-            },
-            "event": [{
-              "listen": "test",
-              "script": { 
-                "exec": [
-                  "if (pm.response.code === 201) {",
-                  "  pm.collectionVariables.set('token', pm.response.json().token);",
-                  "  console.log('Token guardado:', pm.response.json().token);",
-                  "}"
-                ] 
-              }
-            }]
-          },
-          {
-            "name": "1.2 Validación de Email",
-            "request": {
-              "method": "PUT",
-              "header": [
-                { "key": "Content-Type", "value": "application/json" },
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "body": { 
-                "mode": "raw", 
-                "raw": "{\n  \"code\": \"REPLACE_WITH_CODE\"\n}" 
-              },
-              "url": { "raw": "{{baseUrl}}/users/validation", "host": ["{{baseUrl}}"], "path": ["users", "validation"] }
-            }
-          },
-          {
-            "name": "1.3 Login de Usuario",
-            "request": {
-              "method": "POST",
-              "header": [ 
-                { "key": "Content-Type", "value": "application/json" } 
-              ],
-              "body": { 
-                "mode": "raw", 
-                "raw": "{\n  \"email\": \"usuario@example.com\",\n  \"password\": \"Password123\"\n}" 
-              },
-              "url": { "raw": "{{baseUrl}}/users/login", "host": ["{{baseUrl}}"], "path": ["users", "login"] }
-            },
-            "event": [{
-              "listen": "test",
-              "script": { 
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  pm.collectionVariables.set('token', pm.response.json().token);",
-                  "  console.log('Token actualizado desde login:', pm.response.json().token);",
-                  "}"
-                ] 
-              }
-            }]
-          },
-          {
-            "name": "1.4 Datos Personales",
-            "request": {
-              "method": "PUT",
-              "header": [
-                { "key": "Content-Type", "value": "application/json" },
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "body": { 
-                "mode": "raw", 
-                "raw": "{\n  \"nombre\": \"Juan\",\n  \"apellidos\": \"Pérez\",\n  \"telefono\": \"600123456\"\n}" 
-              },
-              "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] }
-            }
-          },
-          {
-            "name": "1.5 Datos de Empresa",
-            "request": {
-              "method": "PATCH",
-              "header": [
-                { "key": "Content-Type", "value": "application/json" },
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "body": { 
-                "mode": "raw", 
-                "raw": "{\n  \"nombre\": \"Mi Empresa S.L.\",\n  \"direccion\": \"Calle Principal 123\"\n}" 
-              },
-              "url": { "raw": "{{baseUrl}}/users/company", "host": ["{{baseUrl}}"], "path": ["users", "company"] }
-            }
-          },
-          {
-            "name": "1.6 Obtener Perfil",
-            "request": {
-              "method": "GET",
-              "header": [
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "url": { "raw": "{{baseUrl}}/users/profile", "host": ["{{baseUrl}}"], "path": ["users", "profile"] }
-            }
-          }
-        ]
-      },
-      {
-        "name": "2. Gestión de Clientes",
-        "item": [
-          {
-            "name": "2.1 Crear Cliente",
-            "request": {
-              "method": "POST",
-              "header": [
-                { "key": "Content-Type", "value": "application/json" },
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "body": { 
-                "mode": "raw", 
-                "raw": "{\n  \"name\": \"Cliente Ejemplo\",\n  \"email\": \"cliente@example.com\",\n  \"phone\": \"600000001\",\n  \"address\": \"Av. Cliente 123\"\n}" 
-              },
-              "url": { "raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"] }
-            },
-            "event": [{
-              "listen": "test",
-              "script": { 
-                "exec": [
-                  "if (pm.response.code === 201) {",
-                  "  pm.collectionVariables.set('clientId', pm.response.json()._id);",
-                  "  console.log('ID de cliente guardado:', pm.response.json()._id);",
-                  "}"
-                ] 
-              }
-            }]
-          },
-          {
-            "name": "2.2 Obtener Todos los Clientes",
-            "request": { 
-              "method": "GET", 
-              "header": [ 
-                { "key": "Authorization", "value": "Bearer {{token}}" } 
-              ],
-              "url": { "raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"] }
-            }
-          },
-          {
-            "name": "2.3 Obtener Cliente por ID",
-            "request": {
-              "method": "GET",
-              "header": [ 
-                { "key": "Authorization", "value": "Bearer {{token}}" } 
-              ],
-              "url": { "raw": "{{baseUrl}}/clients/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["clients", "{{clientId}}"] }
-            }
-          },
-          {
-            "name": "2.4 Actualizar Cliente",
-            "request": {
-              "method": "PUT",
-              "header": [
-                { "key": "Content-Type", "value": "application/json" },
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "body": { 
-                "mode": "raw", 
-                "raw": "{\n  \"phone\": \"611222333\",\n  \"address\": \"Nueva Dirección 456\"\n}" 
-              },
-              "url": { "raw": "{{baseUrl}}/clients/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["clients", "{{clientId}}"] }
-            }
-          },
-          {
-            "name": "2.5 Archivar Cliente",
-            "request": { 
-              "method": "PATCH", 
-              "header": [ 
-                { "key": "Authorization", "value": "Bearer {{token}}" } 
-              ],
-              "url": { "raw": "{{baseUrl}}/clients/{{clientId}}/archive", "host": ["{{baseUrl}}"], "path": ["clients", "{{clientId}}", "archive"] }
-            }
-          },
-          {
-            "name": "2.6 Obtener Clientes Archivados",
-            "request": { 
-              "method": "GET", 
-              "header": [ 
-                { "key": "Authorization", "value": "Bearer {{token}}" } 
-              ],
-              "url": { "raw": "{{baseUrl}}/clients/archived/all", "host": ["{{baseUrl}}"], "path": ["clients", "archived", "all"] }
-            }
-          },
-          {
-            "name": "2.7 Restaurar Cliente",
-            "request": { 
-              "method": "PATCH", 
-              "header": [ 
-                { "key": "Authorization", "value": "Bearer {{token}}" } 
-              ],
-              "url": { "raw": "{{baseUrl}}/clients/{{clientId}}/restore", "host": ["{{baseUrl}}"], "path": ["clients", "{{clientId}}", "restore"] }
-            }
-          }
-        ]
-      },
-      {
-        "name": "3. Gestión de Proyectos",
-        "item": [
-          {
-            "name": "3.1 Crear Proyecto",
-            "request": {
-              "method": "POST",
-              "header": [ 
-                { "key": "Content-Type", "value": "application/json" }, 
-                { "key": "Authorization", "value": "Bearer {{token}}" } 
-              ],
-              "body": { 
-                "mode": "raw", 
-                "raw": "{\n  \"title\": \"Proyecto Demo\",\n  \"description\": \"Descripción del proyecto de demostración\",\n  \"client\": \"{{clientId}}\"\n}" 
-              },
-              "url": { "raw": "{{baseUrl}}/projects", "host": ["{{baseUrl}}"], "path": ["projects"] }
-            },
-            "event": [{ 
-              "listen": "test", 
-              "script": { 
-                "exec": [
-                  "if (pm.response.code === 201) {", 
-                  "  pm.collectionVariables.set('projectId', pm.response.json()._id);",
-                  "  console.log('ID de proyecto guardado:', pm.response.json()._id);",
-                  "}"
-                ] 
-              }
-            }]
-          },
-          {
-            "name": "3.2 Obtener Todos los Proyectos",
-            "request": { 
-              "method": "GET", 
-              "header": [ 
-                { "key": "Authorization", "value": "Bearer {{token}}" } 
-              ],
-              "url": { "raw": "{{baseUrl}}/projects", "host": ["{{baseUrl}}"], "path": ["projects"] }
-            }
-          },
-          {
-            "name": "3.3 Obtener Proyecto por ID",
-            "request": { 
-              "method": "GET", 
-              "header": [ 
-                { "key": "Authorization", "value": "Bearer {{token}}" } 
-              ],
-              "url": { "raw": "{{baseUrl}}/projects/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["projects", "{{projectId}}"] }
-            }
-          },
-          {
-            "name": "3.4 Actualizar Proyecto",
-            "request": {
-              "method": "PUT",
-              "header": [ 
-                { "key": "Content-Type", "value": "application/json" }, 
-                { "key": "Authorization", "value": "Bearer {{token}}" } 
-              ],
-              "body": { 
-                "mode": "raw", 
-                "raw": "{\n  \"description\": \"Descripción actualizada del proyecto\"\n}" 
-              },
-              "url": { "raw": "{{baseUrl}}/projects/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["projects", "{{projectId}}"] }
-            }
-          },
-          {
-            "name": "3.5 Archivar Proyecto",
-            "request": { 
-              "method": "PATCH", 
-              "header": [ 
-                { "key": "Authorization", "value": "Bearer {{token}}" } 
-              ],
-              "url": { "raw": "{{baseUrl}}/projects/{{projectId}}/archive", "host": ["{{baseUrl}}"], "path": ["projects", "{{projectId}}", "archive"] }
-            }
-          },
-          {
-            "name": "3.6 Obtener Proyectos Archivados",
-            "request": { 
-              "method": "GET", 
-              "header": [ 
-                { "key": "Authorization", "value": "Bearer {{token}}" } 
-              ],
-              "url": { "raw": "{{baseUrl}}/projects/archived/all", "host": ["{{baseUrl}}"], "path": ["projects", "archived", "all"] }
-            }
-          },
-          {
-            "name": "3.7 Restaurar Proyecto",
-            "request": { 
-              "method": "PATCH", 
-              "header": [ 
-                { "key": "Authorization", "value": "Bearer {{token}}" } 
-              ],
-              "url": { "raw": "{{baseUrl}}/projects/{{projectId}}/restore", "host": ["{{baseUrl}}"], "path": ["projects", "{{projectId}}", "restore"] }
-            }
-          }
-        ]
-      },
-      {
-        "name": "4. Gestión de Albaranes",
-        "item": [
-          {
-            "name": "4.1 Crear Albarán",
-            "request": {
-              "method": "POST",
-              "header": [
-                { "key": "Content-Type", "value": "application/json" },
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"project\": \"{{projectId}}\",\n  \"items\": [\n    {\n      \"type\": \"hours\",\n      \"person\": \"Técnico 1\",\n      \"hours\": 8,\n      \"unitPrice\": 35\n    },\n    {\n      \"type\": \"material\",\n      \"description\": \"Material Eléctrico\",\n      \"quantity\": 5,\n      \"unitPrice\": 12.50\n    }\n  ]\n}"
-              },
-              "url": { "raw": "{{baseUrl}}/deliverynote", "host": ["{{baseUrl}}"], "path": ["deliverynote"] }
-            },
-            "event": [{
-              "listen": "test",
-              "script": { 
-                "exec": [
-                  "if (pm.response.code === 201) {",
-                  "  pm.collectionVariables.set('deliveryNoteId', pm.response.json()._id);",
-                  "  console.log('ID de albarán guardado:', pm.response.json()._id);",
-                  "}"
-                ] 
-              }
-            }]
-          },
-          {
-            "name": "4.2 Obtener Todos los Albaranes",
-            "request": {
-              "method": "GET",
-              "header": [
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "url": { "raw": "{{baseUrl}}/deliverynote", "host": ["{{baseUrl}}"], "path": ["deliverynote"] }
-            }
-          },
-          {
-            "name": "4.3 Obtener Albarán por ID",
-            "request": {
-              "method": "GET",
-              "header": [
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "url": { "raw": "{{baseUrl}}/deliverynote/{{deliveryNoteId}}", "host": ["{{baseUrl}}"], "path": ["deliverynote", "{{deliveryNoteId}}"] }
-            }
-          },
-          {
-            "name": "4.4 Descargar PDF del Albarán",
-            "request": {
-              "method": "GET",
-              "header": [
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "url": { "raw": "{{baseUrl}}/deliverynote/pdf/{{deliveryNoteId}}", "host": ["{{baseUrl}}"], "path": ["deliverynote", "pdf", "{{deliveryNoteId}}"] }
-            }
-          },
-          {
-            "name": "4.5 Firmar Albarán",
-            "request": {
-              "method": "POST",
-              "header": [
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "body": {
-                "mode": "formdata",
-                "formdata": [
-                  {
-                    "key": "signature",
-                    "type": "file",
-                    "src": "/ruta/a/tu/firma.png"
-                  }
-                ]
-              },
-              "url": { "raw": "{{baseUrl}}/deliverynote/sign/{{deliveryNoteId}}", "host": ["{{baseUrl}}"], "path": ["deliverynote", "sign", "{{deliveryNoteId}}"] }
-            }
-          },
-          {
-            "name": "4.6 Eliminar Albarán",
-            "request": {
-              "method": "DELETE",
-              "header": [
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "url": { "raw": "{{baseUrl}}/deliverynote/{{deliveryNoteId}}", "host": ["{{baseUrl}}"], "path": ["deliverynote", "{{deliveryNoteId}}"] }
-            }
-          }
-        ]
-      },
-      {
-        "name": "5. Gestión de Cuenta",
-        "item": [
-          {
-            "name": "5.1 Cambiar Contraseña",
-            "request": {
-              "method": "PUT",
-              "header": [
-                { "key": "Content-Type", "value": "application/json" },
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"currentPassword\": \"Password123\",\n  \"newPassword\": \"NuevoPassword456\"\n}"
-              },
-              "url": { "raw": "{{baseUrl}}/users/password", "host": ["{{baseUrl}}"], "path": ["users", "password"] }
-            }
-          },
-          {
-            "name": "5.2 Solicitar Restablecimiento de Contraseña",
-            "request": {
-              "method": "POST",
-              "header": [
-                { "key": "Content-Type", "value": "application/json" }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"email\": \"usuario@example.com\"\n}"
-              },
-              "url": { "raw": "{{baseUrl}}/users/password-reset/request", "host": ["{{baseUrl}}"], "path": ["users", "password-reset", "request"] }
-            }
-          },
-          {
-            "name": "5.3 Restablecer Contraseña",
-            "request": {
-              "method": "POST",
-              "header": [
-                { "key": "Content-Type", "value": "application/json" }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"token\": \"token_recibido_por_email\",\n  \"newPassword\": \"NuevaContraseña123\"\n}"
-              },
-              "url": { "raw": "{{baseUrl}}/users/password-reset/reset", "host": ["{{baseUrl}}"], "path": ["users", "password-reset", "reset"] }
-            }
-          },
-          {
-            "name": "5.4 Invitar Usuario",
-            "request": {
-              "method": "POST",
-              "header": [
-                { "key": "Content-Type", "value": "application/json" },
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"email\": \"nuevo@example.com\"\n}"
-              },
-              "url": { "raw": "{{baseUrl}}/users/invite", "host": ["{{baseUrl}}"], "path": ["users", "invite"] }
-            }
-          },
-          {
-            "name": "5.5 Aceptar Invitación",
-            "request": {
-              "method": "POST",
-              "header": [
-                { "key": "Content-Type", "value": "application/json" }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"email\": \"nuevo@example.com\",\n  \"inviteCode\": \"codigo_de_invitacion\",\n  \"password\": \"ContraseñaNueva123\"\n}"
-              },
-              "url": { "raw": "{{baseUrl}}/users/invitation/accept", "host": ["{{baseUrl}}"], "path": ["users", "invitation", "accept"] }
-            }
-          },
-          {
-            "name": "5.6 Desactivar Cuenta (Soft Delete)",
-            "request": {
-              "method": "DELETE",
-              "header": [
-                { "key": "Authorization", "value": "Bearer {{token}}" }
-              ],
-              "url": { "raw": "{{baseUrl}}/users/soft", "host": ["{{baseUrl}}"], "path": ["users", "soft"] }
-            }
-          }
-        ]
-      }
-    ]
-  }
+	"info": {
+		"_postman_id": "a5b4c3d2-e1f0-4321-9876-abcdef123456",
+		"name": "Gestión de Albaranes",
+		"description": "Colección para probar las funcionalidades relacionadas con la gestión de albaranes.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "Registro de Usuario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Token is returned\", function () {",
+									"    pm.expect(jsonData.token).to.exist;",
+									"    pm.collectionVariables.set(\"auth_token\", jsonData.token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						},
+						"description": "Registro de un nuevo usuario en el sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Token is returned\", function () {",
+									"    pm.expect(jsonData.token).to.exist;",
+									"    pm.collectionVariables.set(\"auth_token\", jsonData.token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						},
+						"description": "Iniciar sesión en el sistema"
+					},
+					"response": []
+				},
+				{
+					"name": "Validar Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"{{validation_code}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/validation",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"validation"
+							]
+						},
+						"description": "Validar el correo electrónico del usuario"
+					},
+					"response": []
+				}
+			],
+			"description": "Operaciones relacionadas con usuarios"
+		},
+		{
+			"name": "Clientes",
+			"item": [
+				{
+					"name": "Crear Cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Client ID is returned\", function () {",
+									"    pm.expect(jsonData._id).to.exist;",
+									"    pm.collectionVariables.set(\"client_id\", jsonData._id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Cliente Demo\",\n    \"email\": \"cliente@demo.com\",\n    \"phone\": \"123456789\",\n    \"address\": \"Calle Principal 123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/clients",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"clients"
+							]
+						},
+						"description": "Crear un nuevo cliente"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Clientes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/clients",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"clients"
+							]
+						},
+						"description": "Obtener la lista de clientes"
+					},
+					"response": []
+				}
+			],
+			"description": "Operaciones relacionadas con los clientes"
+		},
+		{
+			"name": "Proyectos",
+			"item": [
+				{
+					"name": "Crear Proyecto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Project ID is returned\", function () {",
+									"    pm.expect(jsonData._id).to.exist;",
+									"    pm.collectionVariables.set(\"project_id\", jsonData._id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Proyecto Demo\",\n    \"description\": \"Este es un proyecto de prueba\",\n    \"client\": \"{{client_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/projects",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"projects"
+							]
+						},
+						"description": "Crear un nuevo proyecto"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Proyectos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/projects",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"projects"
+							]
+						},
+						"description": "Obtener la lista de proyectos"
+					},
+					"response": []
+				}
+			],
+			"description": "Operaciones relacionadas con los proyectos"
+		},
+		{
+			"name": "Albaranes",
+			"item": [
+				{
+					"name": "Crear Albarán Simple (Horas)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Delivery note ID is returned\", function () {",
+									"    pm.expect(jsonData._id).to.exist;",
+									"    pm.collectionVariables.set(\"deliverynote_id_simple\", jsonData._id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"project\": \"{{project_id}}\",\n    \"items\": [\n        {\n            \"type\": \"hours\",\n            \"person\": \"Juan Pérez\",\n            \"hours\": 8,\n            \"unitPrice\": 50\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/deliverynote",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deliverynote"
+							]
+						},
+						"description": "Crear un albarán simple con horas trabajadas"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Albarán Múltiple (Horas y Materiales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Delivery note ID is returned\", function () {",
+									"    pm.expect(jsonData._id).to.exist;",
+									"    pm.collectionVariables.set(\"deliverynote_id_multiple\", jsonData._id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"project\": \"{{project_id}}\",\n    \"items\": [\n        {\n            \"type\": \"hours\",\n            \"person\": \"Juan Pérez\",\n            \"hours\": 8,\n            \"unitPrice\": 50\n        },\n        {\n            \"type\": \"hours\",\n            \"person\": \"Ana García\",\n            \"hours\": 6,\n            \"unitPrice\": 45\n        },\n        {\n            \"type\": \"material\",\n            \"description\": \"Materiales de construcción\",\n            \"quantity\": 10,\n            \"unitPrice\": 25\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/deliverynote",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deliverynote"
+							]
+						},
+						"description": "Crear un albarán con múltiples personas/horas y materiales"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Albaranes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/deliverynote",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deliverynote"
+							]
+						},
+						"description": "Obtener la lista de albaranes"
+					},
+					"response": []
+				},
+				{
+					"name": "Mostrar Albarán Simple",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Delivery note has populated data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.project).to.be.an('object');",
+									"    pm.expect(jsonData.project.client).to.be.an('object');",
+									"    pm.expect(jsonData.createdBy).to.be.an('object');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/deliverynote/{{deliverynote_id_simple}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deliverynote",
+								"{{deliverynote_id_simple}}"
+							]
+						},
+						"description": "Obtener un albarán específico con datos de usuario, cliente y proyecto"
+					},
+					"response": []
+				},
+				{
+					"name": "Mostrar Albarán Múltiple",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Delivery note has populated data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.project).to.be.an('object');",
+									"    pm.expect(jsonData.project.client).to.be.an('object');",
+									"    pm.expect(jsonData.createdBy).to.be.an('object');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/deliverynote/{{deliverynote_id_multiple}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deliverynote",
+								"{{deliverynote_id_multiple}}"
+							]
+						},
+						"description": "Obtener un albarán múltiple específico con datos de usuario, cliente y proyecto"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Albarán PDF",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/pdf\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/pdf\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/deliverynote/pdf/{{deliverynote_id_simple}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deliverynote",
+								"pdf",
+								"{{deliverynote_id_simple}}"
+							]
+						},
+						"description": "Descargar un albarán en formato PDF"
+					},
+					"response": []
+				},
+				{
+					"name": "Firmar Albarán",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Signature URL is returned\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.signatureUrl).to.exist;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "signature",
+									"type": "file",
+									"src": "/path/to/signature.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/deliverynote/sign/{{deliverynote_id_simple}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deliverynote",
+								"sign",
+								"{{deliverynote_id_simple}}"
+							]
+						},
+						"description": "Firmar un albarán subiendo una imagen"
+					},
+					"response": []
+				},
+				{
+					"name": "Descargar Albarán Firmado PDF",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 302\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 302]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/deliverynote/pdf/{{deliverynote_id_simple}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deliverynote",
+								"pdf",
+								"{{deliverynote_id_simple}}"
+							]
+						},
+						"description": "Descargar un albarán firmado en formato PDF (debería redirigir a IPFS)"
+					},
+					"response": []
+				},
+				{
+					"name": "Borrar Albarán (No firmado)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Success is true\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/deliverynote/{{deliverynote_id_multiple}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deliverynote",
+								"{{deliverynote_id_multiple}}"
+							]
+						},
+						"description": "Borrar un albarán no firmado"
+					},
+					"response": []
+				},
+				{
+					"name": "Intentar Borrar Albarán Firmado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400 (Bad Request)\", function() {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"",
+									"pm.test(\"Error message is returned\", function() {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.error).to.exist;",
+									"    pm.expect(jsonData.error).to.include(\"No se puede borrar un albarán firmado\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/deliverynote/{{deliverynote_id_simple}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deliverynote",
+								"{{deliverynote_id_simple}}"
+							]
+						},
+						"description": "Intentar borrar un albarán firmado (debe fallar)"
+					},
+					"response": []
+				}
+			],
+			"description": "Operaciones relacionadas con los albaranes"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:4000",
+			"type": "string"
+		},
+		{
+			"key": "email",
+			"value": "test@example.com",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "password123",
+			"type": "string"
+		},
+		{
+			"key": "validation_code",
+			"value": "ABCDEF",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "client_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "project_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "deliverynote_id_simple",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "deliverynote_id_multiple",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

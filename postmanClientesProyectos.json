@@ -1,0 +1,676 @@
+{
+	"info": {
+		"_postman_id": "b7e85e9a-4e82-4d12-a1ef-c4d2f5eb6278",
+		"name": "Gestión de Clientes y Proyectos",
+		"description": "Colección para probar la API de gestión de clientes y proyectos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:4000"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "clientId",
+			"value": ""
+		},
+		{
+			"key": "projectId",
+			"value": ""
+		}
+	],
+	"item": [
+		{
+			"name": "Autenticación",
+			"item": [
+				{
+					"name": "Registro",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set(\"token\", jsonData.token);",
+									"    pm.test(\"Token guardado\", function () {",
+									"        pm.expect(pm.collectionVariables.get(\"token\")).to.not.be.empty;",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"usuario@ejemplo.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						},
+						"description": "Registra un nuevo usuario y obtiene un token"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set(\"token\", jsonData.token);",
+									"    pm.test(\"Token guardado\", function () {",
+									"        pm.expect(pm.collectionVariables.get(\"token\")).to.not.be.empty;",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"usuario@ejemplo.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						},
+						"description": "Inicia sesión y obtiene un token"
+					},
+					"response": []
+				},
+				{
+					"name": "Validar Email",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"CODIGO\" \n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/validation",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"validation"
+							]
+						},
+						"description": "Valida el email con el código recibido"
+					},
+					"response": []
+				}
+			],
+			"description": "Operaciones de autenticación"
+		},
+		{
+			"name": "Clientes",
+			"item": [
+				{
+					"name": "Crear Cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"if (jsonData._id) {",
+									"    pm.collectionVariables.set(\"clientId\", jsonData._id);",
+									"    pm.test(\"ID de cliente guardado\", function () {",
+									"        pm.expect(pm.collectionVariables.get(\"clientId\")).to.not.be.empty;",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Cliente Ejemplo\",\n    \"email\": \"cliente@ejemplo.com\",\n    \"phone\": \"123456789\",\n    \"address\": \"Calle Ejemplo, 123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"clients"
+							]
+						},
+						"description": "Crea un nuevo cliente asociado al usuario autenticado"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Clientes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"clients"
+							]
+						},
+						"description": "Obtiene todos los clientes no archivados del usuario autenticado"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Cliente por ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/clients/{{clientId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"clients",
+								"{{clientId}}"
+							]
+						},
+						"description": "Obtiene un cliente específico por su ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Cliente",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Cliente Actualizado\",\n    \"email\": \"cliente.actualizado@ejemplo.com\",\n    \"phone\": \"987654321\",\n    \"address\": \"Calle Nueva, 456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/clients/{{clientId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"clients",
+								"{{clientId}}"
+							]
+						},
+						"description": "Actualiza los datos de un cliente existente"
+					},
+					"response": []
+				},
+				{
+					"name": "Archivar Cliente",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/clients/{{clientId}}/archive",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"clients",
+								"{{clientId}}",
+								"archive"
+							]
+						},
+						"description": "Archiva un cliente (soft delete)"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Clientes Archivados",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/clients/archived/all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"clients",
+								"archived",
+								"all"
+							]
+						},
+						"description": "Obtiene todos los clientes archivados del usuario autenticado"
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurar Cliente",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/clients/{{clientId}}/restore",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"clients",
+								"{{clientId}}",
+								"restore"
+							]
+						},
+						"description": "Restaura un cliente previamente archivado"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Cliente",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/clients/{{clientId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"clients",
+								"{{clientId}}"
+							]
+						},
+						"description": "Elimina permanentemente un cliente (hard delete)"
+					},
+					"response": []
+				}
+			],
+			"description": "Operaciones con clientes"
+		},
+		{
+			"name": "Proyectos",
+			"item": [
+				{
+					"name": "Crear Proyecto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"if (jsonData._id) {",
+									"    pm.collectionVariables.set(\"projectId\", jsonData._id);",
+									"    pm.test(\"ID de proyecto guardado\", function () {",
+									"        pm.expect(pm.collectionVariables.get(\"projectId\")).to.not.be.empty;",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Proyecto Ejemplo\",\n    \"description\": \"Descripción del proyecto ejemplo\",\n    \"client\": \"{{clientId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/projects",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"projects"
+							]
+						},
+						"description": "Crea un nuevo proyecto asociado a un cliente"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Proyectos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/projects",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"projects"
+							]
+						},
+						"description": "Obtiene todos los proyectos no archivados del usuario autenticado"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Proyecto por ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/projects/{{projectId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"projects",
+								"{{projectId}}"
+							]
+						},
+						"description": "Obtiene un proyecto específico por su ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Proyecto",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Proyecto Actualizado\",\n    \"description\": \"Descripción actualizada del proyecto\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/projects/{{projectId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"projects",
+								"{{projectId}}"
+							]
+						},
+						"description": "Actualiza los datos de un proyecto existente"
+					},
+					"response": []
+				},
+				{
+					"name": "Archivar Proyecto",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/projects/{{projectId}}/archive",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"projects",
+								"{{projectId}}",
+								"archive"
+							]
+						},
+						"description": "Archiva un proyecto (soft delete)"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Proyectos Archivados",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/projects/archived/all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"projects",
+								"archived",
+								"all"
+							]
+						},
+						"description": "Obtiene todos los proyectos archivados del usuario autenticado"
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurar Proyecto",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/projects/{{projectId}}/restore",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"projects",
+								"{{projectId}}",
+								"restore"
+							]
+						},
+						"description": "Restaura un proyecto previamente archivado"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Proyecto",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/projects/{{projectId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"projects",
+								"{{projectId}}"
+							]
+						},
+						"description": "Elimina permanentemente un proyecto (hard delete)"
+					},
+					"response": []
+				}
+			],
+			"description": "Operaciones con proyectos"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

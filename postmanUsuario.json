@@ -1,0 +1,544 @@
+{
+	"info": {
+		"_postman_id": "e9c49f80-0123-4567-89ab-cdef01234567",
+		"name": "Gestion de Usuarios",
+		"description": "Colección para probar la gestión de usuarios en la aplicación",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. OnBoarding",
+			"item": [
+				{
+					"name": "1.1 Registro de Usuario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"// Guardar token",
+									"if (jsonData.token) {",
+									"    pm.environment.set(\"authToken\", jsonData.token);",
+									"    console.log(\"Token guardado correctamente\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"usuario@test.com\",\n    \"password\": \"Contraseña123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						},
+						"description": "Registra un nuevo usuario en la aplicación"
+					},
+					"response": []
+				},
+				{
+					"name": "1.2 Validar Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"CODIGO\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/validation",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"validation"
+							]
+						},
+						"description": "Valida el correo electrónico usando el código recibido"
+					},
+					"response": []
+				},
+				{
+					"name": "1.3 Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"// Guardar token",
+									"if (jsonData.token) {",
+									"    pm.environment.set(\"authToken\", jsonData.token);",
+									"    console.log(\"Token guardado correctamente\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"usuario@test.com\",\n    \"password\": \"Contraseña123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						},
+						"description": "Inicia sesión de usuario"
+					},
+					"response": []
+				},
+				{
+					"name": "1.4 Actualizar Datos Personales",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Juan\",\n    \"apellidos\": \"Pérez García\",\n    \"telefono\": \"612345678\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Actualiza los datos personales del usuario"
+					},
+					"response": []
+				},
+				{
+					"name": "1.5 Actualizar Datos de Compañía",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nombre\": \"Mi Empresa, S.L.\",\n    \"direccion\": \"Calle Principal 123, 28001 Madrid\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/company",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"company"
+							]
+						},
+						"description": "Actualiza los datos de la compañía"
+					},
+					"response": []
+				}
+			],
+			"description": "Proceso de registro y configuración inicial de la cuenta"
+		},
+		{
+			"name": "2. Gestión de Contraseñas",
+			"item": [
+				{
+					"name": "2.1 Cambiar Contraseña",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"currentPassword\": \"Contraseña123!\",\n    \"newPassword\": \"NuevaContraseña456!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"password"
+							]
+						},
+						"description": "Cambia la contraseña del usuario autenticado"
+					},
+					"response": []
+				},
+				{
+					"name": "2.2 Solicitar Recuperación de Contraseña",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"usuario@test.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/password-reset/request",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"password-reset",
+								"request"
+							]
+						},
+						"description": "Solicita un token para recuperar la contraseña"
+					},
+					"response": []
+				},
+				{
+					"name": "2.3 Resetear Contraseña",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token\": \"token_recibido_por_email\",\n    \"newPassword\": \"ContraseñaNueva789!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/password-reset/reset",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"password-reset",
+								"reset"
+							]
+						},
+						"description": "Restablece la contraseña usando el token recibido"
+					},
+					"response": []
+				}
+			],
+			"description": "Funcionalidades relacionadas con la gestión de contraseñas"
+		},
+		{
+			"name": "3. Gestión de Invitaciones",
+			"item": [
+				{
+					"name": "3.1 Invitar Usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"nuevo_usuario@test.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/invite",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"invite"
+							]
+						},
+						"description": "Invita a un nuevo usuario a unirse a la compañía"
+					},
+					"response": []
+				},
+				{
+					"name": "3.2 Aceptar Invitación",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"nuevo_usuario@test.com\",\n    \"inviteCode\": \"codigo_invitacion\",\n    \"password\": \"MiContraseña123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/invitation/accept",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"invitation",
+								"accept"
+							]
+						},
+						"description": "Acepta una invitación y establece una contraseña"
+					},
+					"response": []
+				}
+			],
+			"description": "Funcionalidades para invitar y aceptar invitaciones de usuarios"
+		},
+		{
+			"name": "4. Perfil de Usuario",
+			"item": [
+				{
+					"name": "4.1 Obtener Perfil",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"profile"
+							]
+						},
+						"description": "Obtiene los datos del perfil del usuario autenticado"
+					},
+					"response": []
+				}
+			],
+			"description": "Operaciones relacionadas con el perfil de usuario"
+		},
+		{
+			"name": "5. Eliminación de Usuario",
+			"item": [
+				{
+					"name": "5.1 Desactivar Usuario (Soft Delete)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/soft",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"soft"
+							]
+						},
+						"description": "Desactiva el usuario (soft delete)"
+					},
+					"response": []
+				},
+				{
+					"name": "5.2 Eliminar Usuario (Hard Delete)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/hard",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"hard"
+							]
+						},
+						"description": "Elimina permanentemente el usuario (hard delete)"
+					},
+					"response": []
+				}
+			],
+			"description": "Operaciones para eliminar usuarios (soft y hard delete)"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:4000",
+			"type": "string"
+		}
+	]
+}
