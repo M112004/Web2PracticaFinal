@@ -1,13 +1,23 @@
 const Client = require('../models/Client');
+const AppError = require('../utils/appError');
 
 // Crear cliente
 exports.createClient = async (req, res, next) => {
   try {
     const { name, email, phone, address } = req.body;
+    
+    // Validar datos requeridos
+    if (!name) {
+      return next(new AppError('El nombre del cliente es obligatorio', 400));
+    }
+    
     // Evitar duplicados por usuario o compañía
     const filter = { name, createdBy: req.user._id };
     const exists = await Client.findOne(filter);
-    if (exists) return res.status(400).json({ error: 'Cliente ya existe para este usuario' });
+    
+    if (exists) {
+      return next(new AppError('Cliente ya existe para este usuario', 409));
+    }
 
     const clientData = {
       name,
@@ -17,10 +27,16 @@ exports.createClient = async (req, res, next) => {
       createdBy: req.user._id,
       company: req.user.company ? req.user._id : null
     };
+    
     const client = await Client.create(clientData);
-    res.status(201).json(client);
+    
+    res.status(201).json({
+      status: 'success',
+      data: {
+        client
+      }
+    });
   } catch (err) {
-    console.error('Error en createClient:', err);
     next(err);
   }
 };
@@ -28,13 +44,27 @@ exports.createClient = async (req, res, next) => {
 // Actualizar cliente
 exports.updateClient = async (req, res, next) => {
   try {
+    // Verificar si hay datos para actualizar
+    if (Object.keys(req.body).length === 0) {
+      return next(new AppError('No se proporcionaron datos para actualizar', 400));
+    }
+    
     const client = await Client.findOneAndUpdate(
       { _id: req.params.id, createdBy: req.user._id },
       req.body,
-      { new: true }
+      { new: true, runValidators: true }
     );
-    if (!client) return res.status(404).json({ error: 'Cliente no encontrado' });
-    res.json(client);
+    
+    if (!client) {
+      return next(new AppError('Cliente no encontrado o no tienes permiso para modificarlo', 404));
+    }
+    
+    res.json({
+      status: 'success',
+      data: {
+        client
+      }
+    });
   } catch (err) {
     next(err);
   }
@@ -44,7 +74,14 @@ exports.updateClient = async (req, res, next) => {
 exports.getClients = async (req, res, next) => {
   try {
     const clients = await Client.find({ createdBy: req.user._id, isArchived: false });
-    res.json(clients);
+    
+    res.json({
+      status: 'success',
+      results: clients.length,
+      data: {
+        clients
+      }
+    });
   } catch (err) {
     next(err);
   }
@@ -54,8 +91,17 @@ exports.getClients = async (req, res, next) => {
 exports.getClientById = async (req, res, next) => {
   try {
     const client = await Client.findOne({ _id: req.params.id, createdBy: req.user._id });
-    if (!client) return res.status(404).json({ error: 'Cliente no encontrado' });
-    res.json(client);
+    
+    if (!client) {
+      return next(new AppError('Cliente no encontrado o no tienes permiso para verlo', 404));
+    }
+    
+    res.json({
+      status: 'success',
+      data: {
+        client
+      }
+    });
   } catch (err) {
     next(err);
   }
@@ -69,8 +115,17 @@ exports.archiveClient = async (req, res, next) => {
       { isArchived: true, archivedAt: Date.now() },
       { new: true }
     );
-    if (!client) return res.status(404).json({ error: 'Cliente no encontrado' });
-    res.json({ success: true, client });
+    
+    if (!client) {
+      return next(new AppError('Cliente no encontrado o no tienes permiso para archivarlo', 404));
+    }
+    
+    res.json({
+      status: 'success',
+      data: {
+        client
+      }
+    });
   } catch (err) {
     next(err);
   }
@@ -80,8 +135,15 @@ exports.archiveClient = async (req, res, next) => {
 exports.deleteClient = async (req, res, next) => {
   try {
     const result = await Client.deleteOne({ _id: req.params.id, createdBy: req.user._id });
-    if (result.deletedCount === 0) return res.status(404).json({ error: 'Cliente no encontrado' });
-    res.json({ success: true });
+    
+    if (result.deletedCount === 0) {
+      return next(new AppError('Cliente no encontrado o no tienes permiso para eliminarlo', 404));
+    }
+    
+    res.json({
+      status: 'success',
+      data: null
+    });
   } catch (err) {
     next(err);
   }
@@ -91,7 +153,14 @@ exports.deleteClient = async (req, res, next) => {
 exports.getArchivedClients = async (req, res, next) => {
   try {
     const clients = await Client.find({ createdBy: req.user._id, isArchived: true });
-    res.json(clients);
+    
+    res.json({
+      status: 'success',
+      results: clients.length,
+      data: {
+        clients
+      }
+    });
   } catch (err) {
     next(err);
   }
@@ -105,8 +174,17 @@ exports.restoreClient = async (req, res, next) => {
       { isArchived: false, archivedAt: null },
       { new: true }
     );
-    if (!client) return res.status(404).json({ error: 'Cliente no encontrado' });
-    res.json({ success: true, client });
+    
+    if (!client) {
+      return next(new AppError('Cliente no encontrado o no tienes permiso para restaurarlo', 404));
+    }
+    
+    res.json({
+      status: 'success',
+      data: {
+        client
+      }
+    });
   } catch (err) {
     next(err);
   }

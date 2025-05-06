@@ -5,6 +5,7 @@ const userRoutes = require('./routes/users');
 const clientRoutes = require('./routes/clients');
 const projectRoutes = require('./routes/projects');
 const deliveryNoteRoutes = require('./routes/deliveryNotes');
+const errorMiddleware = require('./middlewares/error');
 
 const app = express();
 app.use(express.json());
@@ -16,11 +17,15 @@ app.use('/api/clients', clientRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/deliverynote', deliveryNoteRoutes);
 
-// Error handler
-app.use((err, req, res, next) => {
-  console.error('Error general:', err);
-  res.status(500).json({ error: 'Algo falló en el servidor.' });
-});
+// Middleware para rutas no encontradas
+app.use(errorMiddleware.notFound);
+
+// Middlewares de errores - orden importante
+app.use(errorMiddleware.validationError);
+app.use(errorMiddleware.duplicateError);
+app.use(errorMiddleware.authError);
+app.use(errorMiddleware.notFoundError);
+app.use(errorMiddleware.genericError);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`🚀 Servidor en http://localhost:${PORT}`));
