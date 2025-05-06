@@ -4,6 +4,7 @@ const User = require('../models/User');
 const Client = require('../models/Client');
 const PDFDocument = require('pdfkit');
 const streamBuffers = require('stream-buffers');
+const stream = require('stream');
 
 // Pinata SDK import
 const pinataSDK = require('@pinata/sdk');
@@ -148,10 +149,20 @@ exports.signDeliveryNote = async (req, res, next) => {
       return res.status(400).json({ error: 'No se ha proporcionado una imagen de firma' });
     }
 
+    // Convertir el buffer a un Readable Stream que Pinata pueda usar
+    const readableStream = new stream.Readable();
+    readableStream.push(req.file.buffer);
+    readableStream.push(null); // Indica el fin del stream
+
     // Subir la firma a IPFS
     try {
-      const result = await pinata.pinFileToIPFS(req.file.buffer, { 
-        pinataMetadata: { name: `sig-${dn._id}` } 
+      const result = await pinata.pinFileToIPFS(readableStream, { 
+        pinataMetadata: { 
+          name: `sig-${dn._id}` 
+        },
+        pinataOptions: {
+          cidVersion: 0
+        }
       });
       
       dn.signatureIpfs = `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`;
