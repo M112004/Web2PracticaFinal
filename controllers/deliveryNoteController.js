@@ -5,6 +5,7 @@ const Client = require('../models/Client');
 const PDFDocument = require('pdfkit');
 const streamBuffers = require('stream-buffers');
 const stream = require('stream');
+const axios = require('axios'); // Añadir axios para realizar peticiones HTTP
 
 // Pinata SDK import
 const pinataSDK = require('@pinata/sdk');
@@ -66,6 +67,17 @@ exports.getDeliveryNoteById = async (req, res, next) => {
   }
 };
 
+// Función auxiliar para descargar una imagen desde una URL
+async function downloadImage(url) {
+  try {
+    const response = await axios.get(url, { responseType: 'arraybuffer' });
+    return response.data;
+  } catch (error) {
+    console.error('Error al descargar la imagen:', error);
+    throw error;
+  }
+}
+
 // Generar o descargar PDF
 exports.downloadPdf = async (req, res, next) => {
   try {
@@ -103,18 +115,35 @@ exports.downloadPdf = async (req, res, next) => {
 
     // Si está firmado, añadir la firma
     if (dn.isSigned && dn.signatureIpfs) {
-      doc.moveDown().text('Firmado:', { underline: true });
-      doc.image(dn.signatureIpfs, { width: 150 });
+      try {
+        // Descargar la imagen de firma desde IPFS
+        const signatureImageBuffer = await downloadImage(dn.signatureIpfs);
+        
+        doc.moveDown().text('Firmado:', { underline: true });
+        // Añadir la imagen usando el buffer descargado
+        doc.image(signatureImageBuffer, { width: 150 });
+      } catch (imgErr) {
+        console.error('Error al incluir la firma:', imgErr);
+        // Si hay error con la imagen, al menos mencionar que está firmado
+        doc.moveDown().text('Documento firmado electrónicamente');
+      }
     }
     
+    // Finalizar el documento
     doc.end();
 
-    // Cuando el PDF está listo, subirlo a IPFS
+    // Esperar a que el documento se complete
     bufferStream.on('finish', async () => {
-      const pdfBuffer = bufferStream.getContents();
-      
       try {
-        const result = await pinata.pinFileToIPFS(pdfBuffer, { 
+        const pdfBuffer = bufferStream.getContents();
+        
+        // Convertir buffer a un formato que Pinata pueda usar
+        const readableStream = new stream.Readable();
+        readableStream.push(pdfBuffer);
+        readableStream.push(null);
+        
+        // Subir a IPFS
+        const result = await pinata.pinFileToIPFS(readableStream, { 
           pinataMetadata: { name: `albaran-${dn._id}` } 
         });
         
@@ -129,7 +158,7 @@ exports.downloadPdf = async (req, res, next) => {
         console.error('Error al subir a Pinata:', pinataErr);
         // Si falla la subida a IPFS, al menos enviar el PDF
         res.setHeader('Content-Type', 'application/pdf');
-        res.send(pdfBuffer);
+        res.send(bufferStream.getContents());
       }
     });
   } catch (err) { 
